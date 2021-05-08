@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "axios": "^0.21.1",
     "puppeteer": "^9.1.1",
-    "puppeteer-core": "^9.1.1"
+    "puppeteer-core": "^9.1.1",
+    "querystring": "^0.2.1"
   }
 }
