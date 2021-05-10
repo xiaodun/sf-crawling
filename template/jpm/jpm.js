@@ -28,17 +28,17 @@ const fs = require("fs");
   audioInfoList.forEach(async (audioItem, audioIndex) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(audioItem.url, {
-      waitUntil: "networkidle0",
-    });
+    await page.goto(audioItem.url);
+    page.waitForSelector(".audio_card_switch");
     await page.click(".audio_card_switch");
+
     const downloadSrc = await page.evaluate(() => {
       return document.querySelector("audio").src;
     });
     const audioContent = await axios.get(downloadSrc, {
       responseType: "arraybuffer",
     });
-    fs.writeFileSync(audioItem.name + ".mp3", audioContent.data, "binary");
+    fs.writeFileSync(`download/${audioItem.name}.mp3`, audioContent.data);
     console.log(
       `${audioIndex}/${audioInfoList.length}  ${audioItem.name} : ${downloadSrc}`
     );
