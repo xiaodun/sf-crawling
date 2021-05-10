@@ -1,20 +1,28 @@
 const puppeteer = require("puppeteer");
 
 const copyUtils = require("../../utils/copyUtils.js");
-
+const queryStr = "声声慢";
+const selectedIndex = 1;
 (async () => {
   const browser = await puppeteer.launch();
   const dicBaiduPage = await browser.newPage();
   await dicBaiduPage.goto("https://dict.baidu.com/");
-  await dicBaiduPage.type("#kw", "众里寻他千百度");
+  await dicBaiduPage.type("#kw", queryStr);
   await dicBaiduPage.waitForSelector(".suggest-content.home a");
   const contentList = await dicBaiduPage.evaluate(() => {
     return [...document.querySelectorAll(".suggest-content.home a")].reduce(
       (pre, cur) => {
-        pre.push({
-          previewContent: cur.querySelector(".his.poem").innerText,
-          link: cur.href,
-        });
+        if (cur.querySelector(".his.poem")) {
+          pre.push({
+            previewContent: cur.querySelector(".his.poem").innerText,
+            link: cur.href,
+          });
+        } else if (cur.querySelector(".his.zici")) {
+          pre.push({
+            previewContent: cur.querySelector(".his.zici").innerText,
+            link: cur.href,
+          });
+        }
         return pre;
       },
       []
@@ -26,7 +34,7 @@ const copyUtils = require("../../utils/copyUtils.js");
     console.log("\n------------------------------------------------\n");
   });
   console.log("\n---------------------内容--------------------\n");
-  const selectedItem = contentList[1];
+  const selectedItem = contentList[selectedIndex];
   const detailPage = await browser.newPage();
   await detailPage.goto(selectedItem.link);
   const contents = await detailPage.evaluate(() => {
