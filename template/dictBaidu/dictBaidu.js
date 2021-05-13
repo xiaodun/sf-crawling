@@ -1,13 +1,14 @@
 const puppeteer = require("puppeteer");
 
 const copyUtils = require("../../utils/copyUtils.js");
-const queryStr = "声声慢";
-const selectedIndex = 1;
+const queryStr = "零落成泥碾作尘";
+const selectedIndex = 0;
 (async () => {
   const browser = await puppeteer.launch();
   const dicBaiduPage = await browser.newPage();
   await dicBaiduPage.goto("https://dict.baidu.com/");
   await dicBaiduPage.type("#kw", queryStr);
+  console.log("wx");
   await dicBaiduPage.waitForSelector(".suggest-content.home a");
   const contentList = await dicBaiduPage.evaluate(() => {
     return [...document.querySelectorAll(".suggest-content.home a")].reduce(
@@ -40,13 +41,18 @@ const selectedIndex = 1;
   const contents = await detailPage.evaluate(() => {
     const mainDom = document.querySelector("#poem-detail-header");
     const title = mainDom.querySelector("h1").innerText;
-    const authName = mainDom.querySelector(".poem-detail-header-author")
-      .innerText;
+    const authName = mainDom.querySelector(
+      ".poem-detail-header-author"
+    ).innerText;
     const words = mainDom.querySelector(".poem-detail-item-content").innerText;
+    const translation = document.querySelector(
+      ".poem-detail-item-content.means-fold"
+    ).innerText;
     return {
       title,
       authName,
       words,
+      translation,
     };
   });
   console.log(contents.title);
@@ -55,5 +61,8 @@ const selectedIndex = 1;
   copyUtils.exec(
     `${contents.title}\n\n${contents.authName}\n\n${contents.words}`
   );
+  console.log(`\n------------------------\n`);
+  console.log(contents.translation);
+
   await browser.close();
 })();
