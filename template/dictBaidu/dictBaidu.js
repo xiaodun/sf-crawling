@@ -1,14 +1,14 @@
 const puppeteer = require("puppeteer");
 
 const copyUtils = require("../../utils/copyUtils.js");
-const queryStr = "零落成泥碾作尘";
-const selectedIndex = 0;
+const args = process.argv.slice(2);
+const queryStr = args[0];
+const selectedIndex = args[1] || 0;
 (async () => {
   const browser = await puppeteer.launch();
   const dicBaiduPage = await browser.newPage();
   await dicBaiduPage.goto("https://dict.baidu.com/");
   await dicBaiduPage.type("#kw", queryStr);
-  console.log("wx");
   await dicBaiduPage.waitForSelector(".suggest-content.home a");
   const contentList = await dicBaiduPage.evaluate(() => {
     return [...document.querySelectorAll(".suggest-content.home a")].reduce(
@@ -45,8 +45,8 @@ const selectedIndex = 0;
       ".poem-detail-header-author"
     ).innerText;
     const words = mainDom.querySelector(".poem-detail-item-content").innerText;
-    const translation = document.querySelector(
-      ".poem-detail-item-content.means-fold"
+    const translation = (
+      document.querySelector(".poem-detail-item-content.means-fold") || ""
     ).innerText;
     return {
       title,
