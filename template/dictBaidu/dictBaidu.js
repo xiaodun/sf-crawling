@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 
-const copyUtils = require("../../utils/copyUtils.js");
+const copyToClipboard = require("sf-copy-to-clipboard");
 const args = process.argv.slice(2);
 const queryStr = args[0];
 const selectedIndex = args[1] || 0;
@@ -58,7 +58,7 @@ const selectedIndex = args[1] || 0;
   console.log(contents.title);
   console.log(contents.authName);
   console.log(contents.words);
-  copyUtils.exec(
+  copyToClipboard(
     `${contents.title}\n\n${contents.authName}\n\n${contents.words}`
   );
   console.log(`\n------------------------\n`);
