@@ -9,13 +9,21 @@ const fs = require("fs");
 const path = require("path");
 
 const readDir = fs.readdirSync(folderPath);
+let list = [];
 readDir.forEach((item) => {
   const itemPath = path.join(folderPath, item);
   const stat = fs.lstatSync(itemPath);
   if (stat.isFile()) {
-    const pattern = /(\d+?)\s*?\-\s*?([\w\u4e00-\u9fa5]+)/;
+    const pattern = /([-?\d]+?)\s*?\-\s*?([\w\u4e00-\u9fa5]+)/;
 
     const result = pattern.exec(item);
-    console.log(`${result[1]}.${result[2]}-${topicName}`);
+    list.push({
+      sort: result[1],
+      content: `${result[1]}.${result[2]}-${topicName}`,
+    });
   }
+});
+list.sort((a, b) => a.sort - b.sort);
+list.forEach((item) => {
+  console.log(item.content);
 });
